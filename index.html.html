@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KetoForge AI — TikTok Content Generator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Bebas+Neue&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --fire: #ff3d00;
+    --fire-soft: #ff6b3d;
+    --fire-dim: rgba(255,61,0,0.12);
+    --fire-border: rgba(255,61,0,0.28);
+    --bg: #080808;
+    --surface: #111111;
+    --surface2: #181818;
+    --line: #222222;
+    --text: #f0ede8;
+    --muted: #666;
+    --blue: #4f8ef7;
+    --green: #22c55e;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--line);
+    background: #0c0c0c;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--fire);
+  }
+  .logo span { color: var(--text); }
+  .badge {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    background: var(--fire-dim); border: 1px solid var(--fire-border);
+    color: var(--fire-soft); padding: 5px 11px; border-radius: 20px;
+    text-transform: uppercase;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 56px 24px 40px;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-eyebrow {
+    font-size: 11px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--fire); margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 8vw, 80px);
+    line-height: 0.95; letter-spacing: 2px; color: var(--text);
+    margin-bottom: 18px;
+  }
+  .hero h1 em { color: var(--fire); font-style: normal; }
+  .hero p { font-size: 16px; color: var(--muted); max-width: 480px; margin: 0 auto; line-height: 1.6; }
+
+  /* ── MAIN LAYOUT ── */
+  .main { max-width: 780px; margin: 0 auto; padding: 36px 20px 80px; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+  .card-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--fire); margin-bottom: 14px;
+  }
+
+  /* ── TOGGLE PILLS ── */
+  .pill-group { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill {
+    padding: 9px 18px; border-radius: 8px; border: 2px solid var(--line);
+    background: var(--surface2); color: var(--muted); font-weight: 700;
+    font-size: 13px; cursor: pointer; transition: all 0.15s; user-select: none;
+  }
+  .pill:hover { border-color: var(--fire-soft); color: var(--text); }
+  .pill.active {
+    border-color: var(--fire); background: var(--fire-dim); color: var(--fire-soft);
+  }
+
+  /* ── FORMAT ROWS ── */
+  .format-list { display: flex; flex-direction: column; gap: 8px; }
+  .format-row {
+    display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+    border-radius: 10px; border: 2px solid var(--line); background: var(--surface2);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .format-row:hover { border-color: #333; }
+  .format-row.active { border-color: var(--fire); background: var(--fire-dim); }
+  .format-icon { font-size: 22px; flex-shrink: 0; }
+  .format-name { font-weight: 700; font-size: 14px; color: var(--text); }
+  .format-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* ── INPUT ── */
+  input[type="email"] {
+    width: 100%; padding: 14px 16px;
+    background: var(--surface2); border: 2px solid var(--line);
+    border-radius: 10px; color: var(--text); font-size: 15px;
+    font-family: 'Inter', sans-serif; outline: none; transition: border 0.15s;
+  }
+  input[type="email"]:focus { border-color: var(--fire); }
+  input[type="email"]::placeholder { color: #444; }
+
+  /* ── GENERATE BUTTON ── */
+  #generateBtn {
+    width: 100%; padding: 18px 0; margin-top: 8px;
+    background: var(--fire); border: none; border-radius: 12px;
+    color: #fff; font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 2px; cursor: pointer;
+    transition: all 0.2s; position: relative; overflow: hidden;
+  }
+  #generateBtn:hover { background: var(--fire-soft); transform: translateY(-1px); }
+  #generateBtn:disabled { background: #2a2a2a; color: #555; cursor: not-allowed; transform: none; }
+
+  /* ── LOADER ── */
+  .loader-wrap {
+    display: none; flex-direction: column; align-items: center;
+    padding: 60px 20px; text-align: center;
+  }
+  .loader-wrap.show { display: flex; }
+  .flame-loader {
+    font-size: 48px; animation: flicker 0.6s ease-in-out infinite alternate;
+    margin-bottom: 20px;
+  }
+  @keyframes flicker { from { transform: scale(1) rotate(-3deg); } to { transform: scale(1.1) rotate(3deg); } }
+  .loader-text { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; color: var(--fire); }
+  .loader-sub { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+  /* ── RESULTS ── */
+  #results { display: none; }
+  #results.show { display: block; }
+
+  .result-header {
+    background: var(--fire-dim); border: 2px solid var(--fire-border);
+    border-radius: 14px; padding: 22px 24px; margin-bottom: 16px;
+  }
+  .result-recipe-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 5vw, 42px); letter-spacing: 1px;
+    color: var(--text); margin-bottom: 6px; line-height: 1;
+  }
+  .result-meta { font-size: 12px; color: var(--muted); }
+
+  /* ── HOOK ── */
+  .hook-text {
+    font-size: clamp(18px, 4vw, 24px); font-weight: 900;
+    color: #fff; line-height: 1.3;
+  }
+
+  /* ── MACROS ── */
+  .macro-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .macro-box {
+    background: #0f0f0f; border-radius: 10px; padding: 14px 8px; text-align: center;
+    border: 1px solid var(--line);
+  }
+  .macro-num { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--fire); letter-spacing: 1px; }
+  .macro-unit { font-size: 14px; }
+  .macro-label { font-size: 10px; color: var(--muted); margin-top: 3px; letter-spacing: 1px; text-transform: uppercase; }
+
+  /* ── INGREDIENTS ── */
+  .ing-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 0; border-bottom: 1px solid var(--line);
+    font-size: 14px; color: #ccc;
+  }
+  .ing-item:last-child { border-bottom: none; }
+  .ing-dot { width: 6px; height: 6px; background: var(--fire); border-radius: 50%; flex-shrink: 0; }
+
+  /* ── SCRIPT ── */
+  .script-text {
+    font-size: 14px; line-height: 1.85; color: #bbb; white-space: pre-wrap;
+  }
+  .script-text .cue {
+    color: var(--fire-soft); font-style: italic; font-weight: 600;
+  }
+
+  /* ── CAPTIONS ── */
+  .caption-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .caption-chip {
+    background: var(--fire-dim); border: 1px solid var(--fire-border);
+    color: var(--fire-soft); border-radius: 7px; padding: 7px 13px;
+    font-size: 13px; font-weight: 700;
+  }
+
+  /* ── HASHTAGS ── */
+  .hashtag-text { font-size: 14px; color: var(--blue); line-height: 2; }
+
+  /* ── DESCRIPTION ── */
+  .desc-text { font-size: 14px; color: #bbb; line-height: 1.7; }
+
+  /* ── AI TOOL BOX ── */
+  .tool-highlight {
+    background: var(--fire-dim); border: 1px solid var(--fire-border);
+    border-radius: 10px; padding: 16px 18px;
+  }
+  .tool-name { font-size: 18px; font-weight: 900; color: var(--text); margin-bottom: 6px; }
+  .tool-tip { font-size: 13px; color: #999; line-height: 1.6; }
+
+  /* ── VIDEO PROMPT ── */
+  .video-prompt-text {
+    font-size: 13px; color: #aaa; font-style: italic; line-height: 1.75;
+    background: #0f0f0f; border-radius: 8px; padding: 14px;
+    border-left: 3px solid var(--fire);
+  }
+
+  /* ── ACTIONS ── */
+  .actions { display: flex; gap: 10px; margin-top: 8px; margin-bottom: 20px; }
+  .btn-secondary {
+    flex: 1; padding: 14px 0; background: var(--surface2);
+    border: 2px solid var(--line); border-radius: 10px;
+    color: var(--text); font-weight: 700; font-size: 14px;
+    cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif;
+  }
+  .btn-secondary:hover { border-color: #444; }
+  .btn-secondary.success { background: #14532d; border-color: var(--green); color: var(--green); }
+  .btn-email {
+    flex: 1; padding: 14px 0; background: var(--fire);
+    border: none; border-radius: 10px; color: #fff;
+    font-weight: 700; font-size: 14px; cursor: pointer;
+    transition: all 0.15s; font-family: 'Inter', sans-serif;
+  }
+  .btn-email:hover { background: var(--fire-soft); }
+  .btn-email:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-email.success { background: var(--green); }
+  .btn-reset {
+    width: 100%; padding: 13px 0; background: transparent;
+    border: 2px solid var(--line); border-radius: 10px; color: var(--muted);
+    font-weight: 700; font-size: 14px; cursor: pointer;
+    transition: all 0.15s; font-family: 'Inter', sans-serif;
+  }
+  .btn-reset:hover { border-color: #333; color: var(--text); }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: var(--line); margin: 24px 0; }
+
+  @media (max-width: 500px) {
+    .macro-grid { grid-template-columns: repeat(2, 1fr); }
+    .actions { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Keto<span>Forge</span></div>
+  <div class="badge">AI Powered</div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">🥩 For Carnivore & Keto Creators</div>
+  <h1>YOUR DAILY<br><em>TIKTOK</em><br>CONTENT PACK</h1>
+  <p>AI writes your script, hook, captions, hashtags & video prompt. You cook. You post.</p>
+</div>
+
+<div class="main">
+
+  <!-- CONFIG SECTION -->
+  <div id="configSection">
+
+    <div class="card">
+      <div class="card-label">Your Niche</div>
+      <div class="pill-group">
+        <div class="pill active" data-group="niche" data-val="carnivore" onclick="selectPill(this)">🥩 Carnivore</div>
+        <div class="pill" data-group="niche" data-val="keto" onclick="selectPill(this)">🧈 Keto</div>
+        <div class="pill" data-group="niche" data-val="carnivore and keto" onclick="selectPill(this)">⚡ Both</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Video Format</div>
+      <div class="format-list">
+        <div class="format-row active" data-format="ai_built" onclick="selectFormat(this)">
+          <div class="format-icon">🔴</div>
+          <div>
+            <div class="format-name">AI Built This Meal</div>
+            <div class="format-desc">Prompt Claude live, cook what it suggests, react</div>
+          </div>
+        </div>
+        <div class="format-row" data-format="showdown" onclick="selectFormat(this)">
+          <div class="format-icon">🥩</div>
+          <div>
+            <div class="format-name">Carnivore vs Keto Showdown</div>
+            <div class="format-desc">Same dish, two versions — audience votes</div>
+          </div>
+        </div>
+        <div class="format-row" data-format="sixty_sec" onclick="selectFormat(this)">
+          <div class="format-icon">⚡</div>
+          <div>
+            <div class="format-name">60-Second Carnivore Fix</div>
+            <div class="format-desc">Fast, brutal, delicious. Meat + fat + fire</div>
+          </div>
+        </div>
+        <div class="format-row" data-format="macro" onclick="selectFormat(this)">
+          <div class="format-icon">📊</div>
+          <div>
+            <div class="format-name">Macro Breakdown</div>
+            <div class="format-desc">AI macros overlaid on your cooking footage</div>
+          </div>
+        </div>
+        <div class="format-row" data-format="qa" onclick="selectFormat(this)">
+          <div class="format-icon">❓</div>
+          <div>
+            <div class="format-name">You Ask, AI Answers</div>
+            <div class="format-desc">Follower comment → AI answers → you cook it</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Your Email (for daily delivery)</div>
+      <input type="email" id="emailInput" placeholder="you@example.com"/>
+    </div>
+
+    <button id="generateBtn" onclick="generate()">⚡ GENERATE TODAY'S CONTENT PACK</button>
+  </div>
+
+  <!-- LOADER -->
+  <div class="loader-wrap" id="loader">
+    <div class="flame-loader">🔥</div>
+    <div class="loader-text">AI is cooking your content...</div>
+    <div class="loader-sub">Generating script, hook, macros & video prompt</div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results">
+    <div class="result-header">
+      <div class="card-label">Today's Recipe</div>
+      <div class="result-recipe-name" id="res-recipe"></div>
+      <div class="result-meta" id="res-meta"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">🎣 Hook — First 3 Seconds</div>
+      <div class="hook-text" id="res-hook"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">📊 Macros Per Serving</div>
+      <div class="macro-grid" id="res-macros"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">🛒 Ingredients</div>
+      <div id="res-ingredients"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">🎙️ Voiceover Script</div>
+      <div class="script-text" id="res-script"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">📱 On-Screen Captions</div>
+      <div class="caption-chips" id="res-captions"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">#️⃣ Hashtags</div>
+      <div class="hashtag-text" id="res-hashtags"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">📝 Post Description</div>
+      <div class="desc-text" id="res-description"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">🎬 AI Video Tool to Use</div>
+      <div class="tool-highlight">
+        <div class="tool-name" id="res-tool-name"></div>
+        <div class="tool-tip" id="res-tool-tip"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">🤖 Paste This Into Your AI Video Tool</div>
+      <div class="video-prompt-text" id="res-videoprompt"></div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-secondary" id="copyBtn" onclick="copyAll()">📋 Copy All</button>
+      <button class="btn-email" id="emailBtn" onclick="sendEmail()">📧 Email to Me</button>
+    </div>
+    <button class="btn-reset" onclick="reset()">↩ Generate Another</button>
+  </div>
+
+</div>
+
+<script>
+  const AI_VIDEO_TOOLS = {
+    ai_built:  { tool: "CapCut AI", tip: "Use CapCut's script-to-video feature and splice with your real cooking footage." },
+    showdown:  { tool: "Runway Gen-3", tip: "Generate split-screen B-roll with Runway, then film the real cook yourself." },
+    sixty_sec: { tool: "HeyGen", tip: "Create an AI avatar intro (5 sec), splice with your 30-sec real cook clip." },
+    macro:     { tool: "Canva AI + CapCut", tip: "Use Canva AI for animated macro overlays, CapCut to assemble the cook video." },
+    qa:        { tool: "Sora / Pika", tip: "Generate an AI food visual as a reaction clip, pair it alongside your cook footage." },
+  };
+
+  let currentNiche = "carnivore";
+  let currentFormat = "ai_built";
+  let generatedData = null;
+
+  function selectPill(el) {
+    document.querySelectorAll(`.pill[data-group="${el.dataset.group}"]`).forEach(p => p.classList.remove("active"));
+    el.classList.add("active");
+    currentNiche = el.dataset.val;
+  }
+
+  function selectFormat(el) {
+    document.querySelectorAll(".format-row").forEach(r => r.classList.remove("active"));
+    el.classList.add("active");
+    currentFormat = el.dataset.format;
+  }
+
+  function formatLabel() {
+    const labels = {
+      ai_built: "AI Built This Meal",
+      showdown: "Carnivore vs Keto Showdown",
+      sixty_sec: "60-Second Carnivore Fix",
+      macro: "Macro Breakdown",
+      qa: "You Ask, AI Answers"
+    };
+    return labels[currentFormat];
+  }
+
+  async function generate() {
+    const btn = document.getElementById("generateBtn");
+    btn.disabled = true;
+
+    document.getElementById("configSection").style.display = "none";
+    document.getElementById("loader").classList.add("show");
+    document.getElementById("results").classList.remove("show");
+
+    const prompt = `You are a viral TikTok content strategist for a ${currentNiche} food page. Generate a complete video content pack for the "${formatLabel()}" format.
+
+Return ONLY a valid JSON object. No markdown, no backticks, no explanation before or after. Just the JSON.
+
+{
+  "recipe_name": "catchy dish name",
+  "hook": "opening line — first 3 seconds, must stop the scroll (bold, surprising, or funny)",
+  "ingredients": ["ingredient with quantity", "ingredient with quantity", "up to 6 total"],
+  "script": "full 45-60 second voiceover script with [VISUAL CUE: description] notes inline",
+  "captions": ["max 5 words", "max 5 words", "max 5 words", "max 5 words"],
+  "hashtags": "#tag1 #tag2 #tag3 #tag4 #tag5 #tag6 #tag7 #tag8 #tag9 #tag10",
+  "description": "TikTok post description — 2-3 punchy sentences with a call to action",
+  "video_prompt": "detailed prompt to paste into an AI video tool — describe visual scene, lighting, style, camera angle, mood",
+  "macros": { "calories": 000, "protein_g": 00, "fat_g": 00, "carbs_g": 0 }
+}`;
+
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 1200,
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+
+      const data = await res.json();
+      const raw = data.content.map(b => b.text || "").join("");
+      const clean = raw.replace(/```json|```/g, "").trim();
+      generatedData = JSON.parse(clean);
+      renderResults(generatedData);
+    } catch(e) {
+      alert("Something went wrong generating content. Please try again.");
+      reset();
+    } finally {
+      btn.disabled = false;
+      document.getElementById("loader").classList.remove("show");
+    }
+  }
+
+  function renderResults(d) {
+    const tool = AI_VIDEO_TOOLS[currentFormat];
+
+    document.getElementById("res-recipe").textContent = d.recipe_name;
+    document.getElementById("res-meta").textContent = `${formatLabel()} · ${currentNiche}`;
+    document.getElementById("res-hook").textContent = `"${d.hook}"`;
+
+    // Macros
+    const macros = [
+      { val: d.macros.calories, unit: "", label: "Calories" },
+      { val: d.macros.protein_g, unit: "g", label: "Protein" },
+      { val: d.macros.fat_g, unit: "g", label: "Fat" },
+      { val: d.macros.carbs_g, unit: "g", label: "Carbs" },
+    ];
+    document.getElementById("res-macros").innerHTML = macros.map(m =>
+      `<div class="macro-box">
+        <div class="macro-num">${m.val}<span class="macro-unit">${m.unit}</span></div>
+        <div class="macro-label">${m.label}</div>
+      </div>`
+    ).join("");
+
+    // Ingredients
+    document.getElementById("res-ingredients").innerHTML = d.ingredients.map(i =>
+      `<div class="ing-item"><div class="ing-dot"></div>${i}</div>`
+    ).join("");
+
+    // Script — highlight [VISUAL CUE] notes
+    document.getElementById("res-script").innerHTML = d.script.replace(/\[([^\]]+)\]/g,
+      '<span class="cue">[$1]</span>');
+
+    // Captions
+    document.getElementById("res-captions").innerHTML = d.captions.map(c =>
+      `<div class="caption-chip">${c}</div>`
+    ).join("");
+
+    document.getElementById("res-hashtags").textContent = d.hashtags;
+    document.getElementById("res-description").textContent = d.description;
+    document.getElementById("res-tool-name").textContent = tool.tool;
+    document.getElementById("res-tool-tip").textContent = tool.tip;
+    document.getElementById("res-videoprompt").textContent = d.video_prompt;
+
+    document.getElementById("results").classList.add("show");
+  }
+
+  function copyAll() {
+    if (!generatedData) return;
+    const d = generatedData;
+    const tool = AI_VIDEO_TOOLS[currentFormat];
+    const text =
+      `🥩 ${d.recipe_name}\n\n` +
+      `HOOK: "${d.hook}"\n\n` +
+      `INGREDIENTS:\n${d.ingredients.join("\n")}\n\n` +
+      `MACROS: ${d.macros.calories} cal | ${d.macros.protein_g}g protein | ${d.macros.fat_g}g fat | ${d.macros.carbs_g}g carbs\n\n` +
+      `SCRIPT:\n${d.script}\n\n` +
+      `CAPTIONS: ${d.captions.join(" · ")}\n\n` +
+      `HASHTAGS: ${d.hashtags}\n\n` +
+      `DESCRIPTION: ${d.description}\n\n` +
+      `VIDEO TOOL: ${tool.tool} — ${tool.tip}\n\n` +
+      `VIDEO PROMPT: ${d.video_prompt}`;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById("copyBtn");
+      btn.textContent = "✓ Copied!";
+      btn.classList.add("success");
+      setTimeout(() => { btn.textContent = "📋 Copy All"; btn.classList.remove("success"); }, 2500);
+    });
+  }
+
+  function sendEmail() {
+    if (!generatedData) return;
+    const email = document.getElementById("emailInput").value.trim();
+    if (!email) { alert("Please enter your email address in the form above, then try again."); return; }
+    const d = generatedData;
+    const tool = AI_VIDEO_TOOLS[currentFormat];
+    const subject = encodeURIComponent(`🥩 TikTok Content Pack: ${d.recipe_name}`);
+    const body = encodeURIComponent(
+      `TODAY'S TIKTOK CONTENT PACK\n` +
+      `Format: ${formatLabel()} | Niche: ${currentNiche}\n\n` +
+      `RECIPE: ${d.recipe_name}\n\n` +
+      `🎣 HOOK\n"${d.hook}"\n\n` +
+      `🛒 INGREDIENTS\n${d.ingredients.join("\n")}\n\n` +
+      `📊 MACROS\nCalories: ${d.macros.calories} | Protein: ${d.macros.protein_g}g | Fat: ${d.macros.fat_g}g | Carbs: ${d.macros.carbs_g}g\n\n` +
+      `🎙️ SCRIPT\n${d.script}\n\n` +
+      `📱 CAPTIONS\n${d.captions.join(" | ")}\n\n` +
+      `#️⃣ HASHTAGS\n${d.hashtags}\n\n` +
+      `📝 DESCRIPTION\n${d.description}\n\n` +
+      `🎬 AI VIDEO TOOL: ${tool.tool}\n${tool.tip}\n\n` +
+      `🤖 VIDEO PROMPT\n${d.video_prompt}`
+    );
+    window.location.href = `mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`;
+    const btn = document.getElementById("emailBtn");
+    btn.textContent = "✓ Email Opened!";
+    btn.classList.add("success");
+    setTimeout(() => { btn.textContent = "📧 Email to Me"; btn.classList.remove("success"); }, 3000);
+  }
+
+  function reset() {
+    generatedData = null;
+    document.getElementById("configSection").style.display = "block";
+    document.getElementById("results").classList.remove("show");
+    document.getElementById("loader").classList.remove("show");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+</script>
+</body>
+</html>
