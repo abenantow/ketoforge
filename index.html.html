@@ -6,260 +6,203 @@
 <title>KetoForge AI — TikTok Content Generator</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Bebas+Neue&display=swap');
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --fire: #ff3d00;
-    --fire-soft: #ff6b3d;
-    --fire-dim: rgba(255,61,0,0.12);
-    --fire-border: rgba(255,61,0,0.28);
-    --bg: #080808;
-    --surface: #111111;
-    --surface2: #181818;
-    --line: #222222;
-    --text: #f0ede8;
-    --muted: #666;
-    --blue: #4f8ef7;
-    --green: #22c55e;
+    --fire: #ff3d00; --fire-soft: #ff6b3d;
+    --fire-dim: rgba(255,61,0,0.12); --fire-border: rgba(255,61,0,0.28);
+    --bg: #080808; --surface: #111111; --surface2: #181818;
+    --line: #222222; --text: #f0ede8; --muted: #666;
+    --blue: #4f8ef7; --green: #22c55e;
   }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    min-height: 100vh;
-  }
-
-  /* ── HEADER ── */
+  /* HEADER */
   header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 28px;
-    border-bottom: 1px solid var(--line);
-    background: #0c0c0c;
-    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 28px; border-bottom: 1px solid var(--line);
+    background: #0c0c0c; position: sticky; top: 0; z-index: 50;
   }
-  .logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 2px;
-    color: var(--fire);
-  }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--fire); }
   .logo span { color: var(--text); }
   .badge {
     font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
     background: var(--fire-dim); border: 1px solid var(--fire-border);
-    color: var(--fire-soft); padding: 5px 11px; border-radius: 20px;
-    text-transform: uppercase;
+    color: var(--fire-soft); padding: 5px 11px; border-radius: 20px; text-transform: uppercase;
   }
 
-  /* ── HERO ── */
-  .hero {
-    text-align: center;
-    padding: 56px 24px 40px;
-    border-bottom: 1px solid var(--line);
+  /* NAV TABS */
+  .nav-tabs {
+    display: flex; border-bottom: 1px solid var(--line);
+    background: #0c0c0c; padding: 0 28px;
   }
-  .hero-eyebrow {
-    font-size: 11px; font-weight: 700; letter-spacing: 3px;
-    text-transform: uppercase; color: var(--fire); margin-bottom: 16px;
+  .nav-tab {
+    padding: 14px 20px; font-size: 13px; font-weight: 700; cursor: pointer;
+    color: var(--muted); border-bottom: 2px solid transparent;
+    transition: all 0.15s; user-select: none; letter-spacing: 0.5px;
   }
-  .hero h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(42px, 8vw, 80px);
-    line-height: 0.95; letter-spacing: 2px; color: var(--text);
-    margin-bottom: 18px;
-  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { color: var(--fire); border-bottom-color: var(--fire); }
+
+  /* PAGE SECTIONS */
+  .page { display: none; }
+  .page.show { display: block; }
+
+  /* HERO */
+  .hero { text-align: center; padding: 56px 24px 40px; border-bottom: 1px solid var(--line); }
+  .hero-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--fire); margin-bottom: 16px; }
+  .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(42px, 8vw, 80px); line-height: 0.95; letter-spacing: 2px; color: var(--text); margin-bottom: 18px; }
   .hero h1 em { color: var(--fire); font-style: normal; }
   .hero p { font-size: 16px; color: var(--muted); max-width: 480px; margin: 0 auto; line-height: 1.6; }
 
-  /* ── MAIN LAYOUT ── */
+  /* MAIN */
   .main { max-width: 780px; margin: 0 auto; padding: 36px 20px 80px; }
 
-  /* ── CARDS ── */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 22px 24px;
-    margin-bottom: 16px;
-  }
-  .card-label {
-    font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
-    text-transform: uppercase; color: var(--fire); margin-bottom: 14px;
-  }
+  /* CARDS */
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; margin-bottom: 16px; }
+  .card-label { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--fire); margin-bottom: 14px; }
 
-  /* ── TOGGLE PILLS ── */
+  /* PILLS */
   .pill-group { display: flex; gap: 8px; flex-wrap: wrap; }
-  .pill {
-    padding: 9px 18px; border-radius: 8px; border: 2px solid var(--line);
-    background: var(--surface2); color: var(--muted); font-weight: 700;
-    font-size: 13px; cursor: pointer; transition: all 0.15s; user-select: none;
-  }
+  .pill { padding: 9px 18px; border-radius: 8px; border: 2px solid var(--line); background: var(--surface2); color: var(--muted); font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.15s; user-select: none; }
   .pill:hover { border-color: var(--fire-soft); color: var(--text); }
-  .pill.active {
-    border-color: var(--fire); background: var(--fire-dim); color: var(--fire-soft);
-  }
+  .pill.active { border-color: var(--fire); background: var(--fire-dim); color: var(--fire-soft); }
 
-  /* ── FORMAT ROWS ── */
+  /* FORMAT ROWS */
   .format-list { display: flex; flex-direction: column; gap: 8px; }
-  .format-row {
-    display: flex; align-items: center; gap: 14px; padding: 14px 16px;
-    border-radius: 10px; border: 2px solid var(--line); background: var(--surface2);
-    cursor: pointer; transition: all 0.15s;
-  }
+  .format-row { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 10px; border: 2px solid var(--line); background: var(--surface2); cursor: pointer; transition: all 0.15s; }
   .format-row:hover { border-color: #333; }
   .format-row.active { border-color: var(--fire); background: var(--fire-dim); }
   .format-icon { font-size: 22px; flex-shrink: 0; }
   .format-name { font-weight: 700; font-size: 14px; color: var(--text); }
   .format-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-  /* ── INPUT ── */
-  input[type="email"] {
-    width: 100%; padding: 14px 16px;
-    background: var(--surface2); border: 2px solid var(--line);
-    border-radius: 10px; color: var(--text); font-size: 15px;
-    font-family: 'Inter', sans-serif; outline: none; transition: border 0.15s;
-  }
+  /* INPUT */
+  input[type="email"] { width: 100%; padding: 14px 16px; background: var(--surface2); border: 2px solid var(--line); border-radius: 10px; color: var(--text); font-size: 15px; font-family: 'Inter', sans-serif; outline: none; transition: border 0.15s; }
   input[type="email"]:focus { border-color: var(--fire); }
   input[type="email"]::placeholder { color: #444; }
 
-  /* ── GENERATE BUTTON ── */
-  #generateBtn {
-    width: 100%; padding: 18px 0; margin-top: 8px;
-    background: var(--fire); border: none; border-radius: 12px;
-    color: #fff; font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px; letter-spacing: 2px; cursor: pointer;
-    transition: all 0.2s; position: relative; overflow: hidden;
-  }
+  /* GENERATE BTN */
+  #generateBtn { width: 100%; padding: 18px 0; margin-top: 8px; background: var(--fire); border: none; border-radius: 12px; color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; }
   #generateBtn:hover { background: var(--fire-soft); transform: translateY(-1px); }
   #generateBtn:disabled { background: #2a2a2a; color: #555; cursor: not-allowed; transform: none; }
 
-  /* ── LOADER ── */
-  .loader-wrap {
-    display: none; flex-direction: column; align-items: center;
-    padding: 60px 20px; text-align: center;
-  }
+  /* LOADER */
+  .loader-wrap { display: none; flex-direction: column; align-items: center; padding: 60px 20px; text-align: center; }
   .loader-wrap.show { display: flex; }
-  .flame-loader {
-    font-size: 48px; animation: flicker 0.6s ease-in-out infinite alternate;
-    margin-bottom: 20px;
-  }
+  .flame-loader { font-size: 48px; animation: flicker 0.6s ease-in-out infinite alternate; margin-bottom: 20px; }
   @keyframes flicker { from { transform: scale(1) rotate(-3deg); } to { transform: scale(1.1) rotate(3deg); } }
   .loader-text { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; color: var(--fire); }
   .loader-sub { font-size: 13px; color: var(--muted); margin-top: 6px; }
 
-  /* ── RESULTS ── */
+  /* RESULTS */
   #results { display: none; }
   #results.show { display: block; }
-
-  .result-header {
-    background: var(--fire-dim); border: 2px solid var(--fire-border);
-    border-radius: 14px; padding: 22px 24px; margin-bottom: 16px;
-  }
-  .result-recipe-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(28px, 5vw, 42px); letter-spacing: 1px;
-    color: var(--text); margin-bottom: 6px; line-height: 1;
-  }
+  .result-header { background: var(--fire-dim); border: 2px solid var(--fire-border); border-radius: 14px; padding: 22px 24px; margin-bottom: 16px; }
+  .result-recipe-name { font-family: 'Bebas Neue', sans-serif; font-size: clamp(28px, 5vw, 42px); letter-spacing: 1px; color: var(--text); margin-bottom: 6px; line-height: 1; }
   .result-meta { font-size: 12px; color: var(--muted); }
-
-  /* ── HOOK ── */
-  .hook-text {
-    font-size: clamp(18px, 4vw, 24px); font-weight: 900;
-    color: #fff; line-height: 1.3;
-  }
-
-  /* ── MACROS ── */
+  .hook-text { font-size: clamp(18px, 4vw, 24px); font-weight: 900; color: #fff; line-height: 1.3; }
   .macro-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-  .macro-box {
-    background: #0f0f0f; border-radius: 10px; padding: 14px 8px; text-align: center;
-    border: 1px solid var(--line);
-  }
+  .macro-box { background: #0f0f0f; border-radius: 10px; padding: 14px 8px; text-align: center; border: 1px solid var(--line); }
   .macro-num { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--fire); letter-spacing: 1px; }
   .macro-unit { font-size: 14px; }
   .macro-label { font-size: 10px; color: var(--muted); margin-top: 3px; letter-spacing: 1px; text-transform: uppercase; }
-
-  /* ── INGREDIENTS ── */
-  .ing-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 9px 0; border-bottom: 1px solid var(--line);
-    font-size: 14px; color: #ccc;
-  }
+  .ing-item { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 14px; color: #ccc; }
   .ing-item:last-child { border-bottom: none; }
   .ing-dot { width: 6px; height: 6px; background: var(--fire); border-radius: 50%; flex-shrink: 0; }
-
-  /* ── SCRIPT ── */
-  .script-text {
-    font-size: 14px; line-height: 1.85; color: #bbb; white-space: pre-wrap;
-  }
-  .script-text .cue {
-    color: var(--fire-soft); font-style: italic; font-weight: 600;
-  }
-
-  /* ── CAPTIONS ── */
+  .script-text { font-size: 14px; line-height: 1.85; color: #bbb; white-space: pre-wrap; }
+  .script-text .cue { color: var(--fire-soft); font-style: italic; font-weight: 600; }
   .caption-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .caption-chip {
-    background: var(--fire-dim); border: 1px solid var(--fire-border);
-    color: var(--fire-soft); border-radius: 7px; padding: 7px 13px;
-    font-size: 13px; font-weight: 700;
-  }
-
-  /* ── HASHTAGS ── */
+  .caption-chip { background: var(--fire-dim); border: 1px solid var(--fire-border); color: var(--fire-soft); border-radius: 7px; padding: 7px 13px; font-size: 13px; font-weight: 700; }
   .hashtag-text { font-size: 14px; color: var(--blue); line-height: 2; }
-
-  /* ── DESCRIPTION ── */
   .desc-text { font-size: 14px; color: #bbb; line-height: 1.7; }
-
-  /* ── AI TOOL BOX ── */
-  .tool-highlight {
-    background: var(--fire-dim); border: 1px solid var(--fire-border);
-    border-radius: 10px; padding: 16px 18px;
-  }
+  .tool-highlight { background: var(--fire-dim); border: 1px solid var(--fire-border); border-radius: 10px; padding: 16px 18px; }
   .tool-name { font-size: 18px; font-weight: 900; color: var(--text); margin-bottom: 6px; }
   .tool-tip { font-size: 13px; color: #999; line-height: 1.6; }
+  .video-prompt-text { font-size: 13px; color: #aaa; font-style: italic; line-height: 1.75; background: #0f0f0f; border-radius: 8px; padding: 14px; border-left: 3px solid var(--fire); }
 
-  /* ── VIDEO PROMPT ── */
-  .video-prompt-text {
-    font-size: 13px; color: #aaa; font-style: italic; line-height: 1.75;
-    background: #0f0f0f; border-radius: 8px; padding: 14px;
-    border-left: 3px solid var(--fire);
-  }
-
-  /* ── ACTIONS ── */
-  .actions { display: flex; gap: 10px; margin-top: 8px; margin-bottom: 20px; }
-  .btn-secondary {
-    flex: 1; padding: 14px 0; background: var(--surface2);
-    border: 2px solid var(--line); border-radius: 10px;
-    color: var(--text); font-weight: 700; font-size: 14px;
-    cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif;
-  }
+  /* ACTIONS */
+  .actions { display: flex; gap: 10px; margin-top: 8px; margin-bottom: 12px; }
+  .btn-secondary { flex: 1; padding: 14px 0; background: var(--surface2); border: 2px solid var(--line); border-radius: 10px; color: var(--text); font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; }
   .btn-secondary:hover { border-color: #444; }
   .btn-secondary.success { background: #14532d; border-color: var(--green); color: var(--green); }
-  .btn-email {
-    flex: 1; padding: 14px 0; background: var(--fire);
-    border: none; border-radius: 10px; color: #fff;
-    font-weight: 700; font-size: 14px; cursor: pointer;
-    transition: all 0.15s; font-family: 'Inter', sans-serif;
-  }
+  .btn-save { flex: 1; padding: 14px 0; background: #1a2e1a; border: 2px solid #2d4a2d; border-radius: 10px; color: var(--green); font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; }
+  .btn-save:hover { background: #1f381f; }
+  .btn-save.saved { background: var(--green); color: #fff; border-color: var(--green); }
+  .btn-email { flex: 1; padding: 14px 0; background: var(--fire); border: none; border-radius: 10px; color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; }
   .btn-email:hover { background: var(--fire-soft); }
-  .btn-email:disabled { opacity: 0.4; cursor: not-allowed; }
   .btn-email.success { background: var(--green); }
-  .btn-reset {
-    width: 100%; padding: 13px 0; background: transparent;
-    border: 2px solid var(--line); border-radius: 10px; color: var(--muted);
-    font-weight: 700; font-size: 14px; cursor: pointer;
-    transition: all 0.15s; font-family: 'Inter', sans-serif;
-  }
+  .btn-reset { width: 100%; padding: 13px 0; background: transparent; border: 2px solid var(--line); border-radius: 10px; color: var(--muted); font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; }
   .btn-reset:hover { border-color: #333; color: var(--text); }
 
-  /* ── DIVIDER ── */
-  .divider { height: 1px; background: var(--line); margin: 24px 0; }
+  /* ── GALLERY ── */
+  .gallery-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--line);
+  }
+  .gallery-title { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 2px; color: var(--text); }
+  .gallery-count { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .btn-clear-all { padding: 8px 16px; background: transparent; border: 1px solid #333; border-radius: 8px; color: #555; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.15s; }
+  .btn-clear-all:hover { border-color: #ff3d0066; color: var(--fire); }
+
+  .gallery-empty {
+    text-align: center; padding: 80px 20px; color: var(--muted);
+  }
+  .gallery-empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+  .gallery-empty-text { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #444; }
+  .gallery-empty-sub { font-size: 13px; color: #333; }
+
+  .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+
+  .gallery-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 14px; padding: 20px; cursor: pointer;
+    transition: all 0.2s; position: relative;
+  }
+  .gallery-card:hover { border-color: var(--fire-border); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,61,0,0.08); }
+  .gallery-card-format { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--fire); margin-bottom: 8px; }
+  .gallery-card-name { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; color: var(--text); margin-bottom: 6px; line-height: 1.1; }
+  .gallery-card-hook { font-size: 12px; color: var(--muted); line-height: 1.5; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .gallery-card-macros { display: flex; gap: 10px; margin-bottom: 14px; }
+  .gallery-card-macro { font-size: 11px; font-weight: 700; color: #555; }
+  .gallery-card-macro span { color: var(--fire-soft); }
+  .gallery-card-footer { display: flex; align-items: center; justify-content: space-between; }
+  .gallery-card-date { font-size: 11px; color: #333; }
+  .gallery-card-niche { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; background: var(--surface2); border: 1px solid var(--line); border-radius: 4px; padding: 3px 7px; color: #555; }
+  .gallery-card-del { position: absolute; top: 14px; right: 14px; width: 26px; height: 26px; border-radius: 6px; border: 1px solid #2a2a2a; background: var(--surface2); color: #444; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; opacity: 0; }
+  .gallery-card:hover .gallery-card-del { opacity: 1; }
+  .gallery-card-del:hover { background: #2a0a0a; border-color: var(--fire); color: var(--fire); }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+    z-index: 100; overflow-y: auto; padding: 40px 20px;
+  }
+  .modal-overlay.show { display: block; }
+  .modal {
+    max-width: 700px; margin: 0 auto; background: var(--surface);
+    border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
+  }
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 24px; border-bottom: 1px solid var(--line);
+    background: var(--surface2);
+  }
+  .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1px; color: var(--text); }
+  .modal-close { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .modal-close:hover { color: var(--text); border-color: #444; }
+  .modal-body { padding: 24px; max-height: 75vh; overflow-y: auto; }
+  .modal-section { margin-bottom: 20px; }
+  .modal-section-label { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--fire); margin-bottom: 8px; }
+  .modal-text { font-size: 14px; color: #bbb; line-height: 1.7; white-space: pre-wrap; }
+  .modal-macro-row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .modal-macro { font-size: 14px; color: #bbb; }
+  .modal-macro strong { color: var(--fire-soft); }
 
   @media (max-width: 500px) {
     .macro-grid { grid-template-columns: repeat(2, 1fr); }
     .actions { flex-direction: column; }
+    .gallery-grid { grid-template-columns: 1fr; }
+    .nav-tab { padding: 12px 14px; font-size: 12px; }
   }
 </style>
 </head>
@@ -270,145 +213,120 @@
   <div class="badge">AI Powered</div>
 </header>
 
-<div class="hero">
-  <div class="hero-eyebrow">🥩 For Carnivore & Keto Creators</div>
-  <h1>YOUR DAILY<br><em>TIKTOK</em><br>CONTENT PACK</h1>
-  <p>AI writes your script, hook, captions, hashtags & video prompt. You cook. You post.</p>
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <div class="nav-tab active" onclick="showPage('generator')">⚡ Generator</div>
+  <div class="nav-tab" onclick="showPage('gallery')" id="galleryTab">🗂 Recipe Gallery <span id="galleryCountBadge"></span></div>
 </div>
 
-<div class="main">
+<!-- ═══════════════ GENERATOR PAGE ═══════════════ -->
+<div class="page show" id="page-generator">
+  <div class="hero">
+    <div class="hero-eyebrow">🥩 For Carnivore & Keto Creators</div>
+    <h1>YOUR DAILY<br><em>TIKTOK</em><br>CONTENT PACK</h1>
+    <p>AI writes your script, hook, captions, hashtags & video prompt. You cook. You post.</p>
+  </div>
 
-  <!-- CONFIG SECTION -->
-  <div id="configSection">
-
-    <div class="card">
-      <div class="card-label">Your Niche</div>
-      <div class="pill-group">
-        <div class="pill active" data-group="niche" data-val="carnivore" onclick="selectPill(this)">🥩 Carnivore</div>
-        <div class="pill" data-group="niche" data-val="keto" onclick="selectPill(this)">🧈 Keto</div>
-        <div class="pill" data-group="niche" data-val="carnivore and keto" onclick="selectPill(this)">⚡ Both</div>
+  <div class="main">
+    <div id="configSection">
+      <div class="card">
+        <div class="card-label">Your Niche</div>
+        <div class="pill-group">
+          <div class="pill active" data-group="niche" data-val="carnivore" onclick="selectPill(this)">🥩 Carnivore</div>
+          <div class="pill" data-group="niche" data-val="keto" onclick="selectPill(this)">🧈 Keto</div>
+          <div class="pill" data-group="niche" data-val="carnivore and keto" onclick="selectPill(this)">⚡ Both</div>
+        </div>
       </div>
-    </div>
 
-    <div class="card">
-      <div class="card-label">Video Format</div>
-      <div class="format-list">
-        <div class="format-row active" data-format="ai_built" onclick="selectFormat(this)">
-          <div class="format-icon">🔴</div>
-          <div>
-            <div class="format-name">AI Built This Meal</div>
-            <div class="format-desc">Prompt Claude live, cook what it suggests, react</div>
+      <div class="card">
+        <div class="card-label">Video Format</div>
+        <div class="format-list">
+          <div class="format-row active" data-format="ai_built" onclick="selectFormat(this)">
+            <div class="format-icon">🔴</div>
+            <div><div class="format-name">AI Built This Meal</div><div class="format-desc">Prompt Claude live, cook what it suggests, react</div></div>
           </div>
-        </div>
-        <div class="format-row" data-format="showdown" onclick="selectFormat(this)">
-          <div class="format-icon">🥩</div>
-          <div>
-            <div class="format-name">Carnivore vs Keto Showdown</div>
-            <div class="format-desc">Same dish, two versions — audience votes</div>
+          <div class="format-row" data-format="showdown" onclick="selectFormat(this)">
+            <div class="format-icon">🥩</div>
+            <div><div class="format-name">Carnivore vs Keto Showdown</div><div class="format-desc">Same dish, two versions — audience votes</div></div>
           </div>
-        </div>
-        <div class="format-row" data-format="sixty_sec" onclick="selectFormat(this)">
-          <div class="format-icon">⚡</div>
-          <div>
-            <div class="format-name">60-Second Carnivore Fix</div>
-            <div class="format-desc">Fast, brutal, delicious. Meat + fat + fire</div>
+          <div class="format-row" data-format="sixty_sec" onclick="selectFormat(this)">
+            <div class="format-icon">⚡</div>
+            <div><div class="format-name">60-Second Carnivore Fix</div><div class="format-desc">Fast, brutal, delicious. Meat + fat + fire</div></div>
           </div>
-        </div>
-        <div class="format-row" data-format="macro" onclick="selectFormat(this)">
-          <div class="format-icon">📊</div>
-          <div>
-            <div class="format-name">Macro Breakdown</div>
-            <div class="format-desc">AI macros overlaid on your cooking footage</div>
+          <div class="format-row" data-format="macro" onclick="selectFormat(this)">
+            <div class="format-icon">📊</div>
+            <div><div class="format-name">Macro Breakdown</div><div class="format-desc">AI macros overlaid on your cooking footage</div></div>
           </div>
-        </div>
-        <div class="format-row" data-format="qa" onclick="selectFormat(this)">
-          <div class="format-icon">❓</div>
-          <div>
-            <div class="format-name">You Ask, AI Answers</div>
-            <div class="format-desc">Follower comment → AI answers → you cook it</div>
+          <div class="format-row" data-format="qa" onclick="selectFormat(this)">
+            <div class="format-icon">❓</div>
+            <div><div class="format-name">You Ask, AI Answers</div><div class="format-desc">Follower comment → AI answers → you cook it</div></div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="card">
-      <div class="card-label">Your Email (for daily delivery)</div>
-      <input type="email" id="emailInput" placeholder="you@example.com"/>
-    </div>
-
-    <button id="generateBtn" onclick="generate()">⚡ GENERATE TODAY'S CONTENT PACK</button>
-  </div>
-
-  <!-- LOADER -->
-  <div class="loader-wrap" id="loader">
-    <div class="flame-loader">🔥</div>
-    <div class="loader-text">AI is cooking your content...</div>
-    <div class="loader-sub">Generating script, hook, macros & video prompt</div>
-  </div>
-
-  <!-- RESULTS -->
-  <div id="results">
-    <div class="result-header">
-      <div class="card-label">Today's Recipe</div>
-      <div class="result-recipe-name" id="res-recipe"></div>
-      <div class="result-meta" id="res-meta"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-label">🎣 Hook — First 3 Seconds</div>
-      <div class="hook-text" id="res-hook"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-label">📊 Macros Per Serving</div>
-      <div class="macro-grid" id="res-macros"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-label">🛒 Ingredients</div>
-      <div id="res-ingredients"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-label">🎙️ Voiceover Script</div>
-      <div class="script-text" id="res-script"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-label">📱 On-Screen Captions</div>
-      <div class="caption-chips" id="res-captions"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-label">#️⃣ Hashtags</div>
-      <div class="hashtag-text" id="res-hashtags"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-label">📝 Post Description</div>
-      <div class="desc-text" id="res-description"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-label">🎬 AI Video Tool to Use</div>
-      <div class="tool-highlight">
-        <div class="tool-name" id="res-tool-name"></div>
-        <div class="tool-tip" id="res-tool-tip"></div>
+      <div class="card">
+        <div class="card-label">Your Email (for daily delivery)</div>
+        <input type="email" id="emailInput" placeholder="you@example.com"/>
       </div>
+
+      <button id="generateBtn" onclick="generate()">⚡ GENERATE TODAY'S CONTENT PACK</button>
     </div>
 
-    <div class="card">
-      <div class="card-label">🤖 Paste This Into Your AI Video Tool</div>
-      <div class="video-prompt-text" id="res-videoprompt"></div>
+    <div class="loader-wrap" id="loader">
+      <div class="flame-loader">🔥</div>
+      <div class="loader-text">AI is cooking your content...</div>
+      <div class="loader-sub">Generating script, hook, macros & video prompt</div>
     </div>
 
-    <div class="actions">
-      <button class="btn-secondary" id="copyBtn" onclick="copyAll()">📋 Copy All</button>
-      <button class="btn-email" id="emailBtn" onclick="sendEmail()">📧 Email to Me</button>
+    <div id="results">
+      <div class="result-header">
+        <div class="card-label">Today's Recipe</div>
+        <div class="result-recipe-name" id="res-recipe"></div>
+        <div class="result-meta" id="res-meta"></div>
+      </div>
+      <div class="card"><div class="card-label">🎣 Hook — First 3 Seconds</div><div class="hook-text" id="res-hook"></div></div>
+      <div class="card"><div class="card-label">📊 Macros Per Serving</div><div class="macro-grid" id="res-macros"></div></div>
+      <div class="card"><div class="card-label">🛒 Ingredients</div><div id="res-ingredients"></div></div>
+      <div class="card"><div class="card-label">🎙️ Voiceover Script</div><div class="script-text" id="res-script"></div></div>
+      <div class="card"><div class="card-label">📱 On-Screen Captions</div><div class="caption-chips" id="res-captions"></div></div>
+      <div class="card"><div class="card-label">#️⃣ Hashtags</div><div class="hashtag-text" id="res-hashtags"></div></div>
+      <div class="card"><div class="card-label">📝 Post Description</div><div class="desc-text" id="res-description"></div></div>
+      <div class="card"><div class="card-label">🎬 AI Video Tool to Use</div><div class="tool-highlight"><div class="tool-name" id="res-tool-name"></div><div class="tool-tip" id="res-tool-tip"></div></div></div>
+      <div class="card"><div class="card-label">🤖 Paste This Into Your AI Video Tool</div><div class="video-prompt-text" id="res-videoprompt"></div></div>
+
+      <div class="actions">
+        <button class="btn-secondary" id="copyBtn" onclick="copyAll()">📋 Copy All</button>
+        <button class="btn-save" id="saveBtn" onclick="saveToGallery()">💾 Save to Gallery</button>
+        <button class="btn-email" id="emailBtn" onclick="sendEmail()">📧 Email to Me</button>
+      </div>
+      <button class="btn-reset" onclick="reset()">↩ Generate Another</button>
     </div>
-    <button class="btn-reset" onclick="reset()">↩ Generate Another</button>
   </div>
+</div>
 
+<!-- ═══════════════ GALLERY PAGE ═══════════════ -->
+<div class="page" id="page-gallery">
+  <div class="main">
+    <div class="gallery-header">
+      <div>
+        <div class="gallery-title">Recipe Gallery</div>
+        <div class="gallery-count" id="gallerySubCount"></div>
+      </div>
+      <button class="btn-clear-all" onclick="clearAll()">Clear All</button>
+    </div>
+    <div id="galleryContent"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODAL ═══════════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle"></div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
 </div>
 
 <script>
@@ -424,50 +342,50 @@
   let currentFormat = "ai_built";
   let generatedData = null;
 
+  /* ── NAV ── */
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('show'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('show');
+    event.currentTarget.classList.add('active');
+    if (name === 'gallery') renderGallery();
+  }
+
+  /* ── PILLS / FORMAT ── */
   function selectPill(el) {
     document.querySelectorAll(`.pill[data-group="${el.dataset.group}"]`).forEach(p => p.classList.remove("active"));
     el.classList.add("active");
     currentNiche = el.dataset.val;
   }
-
   function selectFormat(el) {
     document.querySelectorAll(".format-row").forEach(r => r.classList.remove("active"));
     el.classList.add("active");
     currentFormat = el.dataset.format;
   }
-
-  function formatLabel() {
-    const labels = {
-      ai_built: "AI Built This Meal",
-      showdown: "Carnivore vs Keto Showdown",
-      sixty_sec: "60-Second Carnivore Fix",
-      macro: "Macro Breakdown",
-      qa: "You Ask, AI Answers"
-    };
-    return labels[currentFormat];
+  function formatLabel(fmt) {
+    const labels = { ai_built:"AI Built This Meal", showdown:"Carnivore vs Keto Showdown", sixty_sec:"60-Second Carnivore Fix", macro:"Macro Breakdown", qa:"You Ask, AI Answers" };
+    return labels[fmt || currentFormat];
   }
 
+  /* ── GENERATE ── */
   async function generate() {
     const btn = document.getElementById("generateBtn");
     btn.disabled = true;
-
     document.getElementById("configSection").style.display = "none";
     document.getElementById("loader").classList.add("show");
-    document.getElementById("results").classList.remove("show");
+    document.getElementById("results").style.display = "none";
 
     const prompt = `You are a viral TikTok content strategist for a ${currentNiche} food page. Generate a complete video content pack for the "${formatLabel()}" format.
-
-Return ONLY a valid JSON object. No markdown, no backticks, no explanation before or after. Just the JSON.
-
+Return ONLY a valid JSON object. No markdown, no backticks, no explanation. Just JSON.
 {
   "recipe_name": "catchy dish name",
-  "hook": "opening line — first 3 seconds, must stop the scroll (bold, surprising, or funny)",
-  "ingredients": ["ingredient with quantity", "ingredient with quantity", "up to 6 total"],
+  "hook": "opening line — first 3 seconds, must stop the scroll",
+  "ingredients": ["ingredient with quantity","up to 6 total"],
   "script": "full 45-60 second voiceover script with [VISUAL CUE: description] notes inline",
-  "captions": ["max 5 words", "max 5 words", "max 5 words", "max 5 words"],
+  "captions": ["max 5 words","max 5 words","max 5 words","max 5 words"],
   "hashtags": "#tag1 #tag2 #tag3 #tag4 #tag5 #tag6 #tag7 #tag8 #tag9 #tag10",
   "description": "TikTok post description — 2-3 punchy sentences with a call to action",
-  "video_prompt": "detailed prompt to paste into an AI video tool — describe visual scene, lighting, style, camera angle, mood",
+  "video_prompt": "detailed prompt to paste into an AI video tool",
   "macros": { "calories": 000, "protein_g": 00, "fat_g": 00, "carbs_g": 0 }
 }`;
 
@@ -475,20 +393,17 @@ Return ONLY a valid JSON object. No markdown, no backticks, no explanation befor
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-6",
-          max_tokens: 1200,
-          messages: [{ role: "user", content: prompt }]
-        })
+        body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 1200, messages: [{ role: "user", content: prompt }] })
       });
-
       const data = await res.json();
       const raw = data.content.map(b => b.text || "").join("");
       const clean = raw.replace(/```json|```/g, "").trim();
       generatedData = JSON.parse(clean);
+      generatedData._format = currentFormat;
+      generatedData._niche = currentNiche;
       renderResults(generatedData);
     } catch(e) {
-      alert("Something went wrong generating content. Please try again.");
+      alert("Something went wrong. Please try again.");
       reset();
     } finally {
       btn.disabled = false;
@@ -496,14 +411,12 @@ Return ONLY a valid JSON object. No markdown, no backticks, no explanation befor
     }
   }
 
+  /* ── RENDER RESULTS ── */
   function renderResults(d) {
-    const tool = AI_VIDEO_TOOLS[currentFormat];
-
+    const tool = AI_VIDEO_TOOLS[d._format || currentFormat];
     document.getElementById("res-recipe").textContent = d.recipe_name;
-    document.getElementById("res-meta").textContent = `${formatLabel()} · ${currentNiche}`;
+    document.getElementById("res-meta").textContent = `${formatLabel(d._format)} · ${d._niche || currentNiche}`;
     document.getElementById("res-hook").textContent = `"${d.hook}"`;
-
-    // Macros
     const macros = [
       { val: d.macros.calories, unit: "", label: "Calories" },
       { val: d.macros.protein_g, unit: "g", label: "Protein" },
@@ -511,54 +424,163 @@ Return ONLY a valid JSON object. No markdown, no backticks, no explanation befor
       { val: d.macros.carbs_g, unit: "g", label: "Carbs" },
     ];
     document.getElementById("res-macros").innerHTML = macros.map(m =>
-      `<div class="macro-box">
-        <div class="macro-num">${m.val}<span class="macro-unit">${m.unit}</span></div>
-        <div class="macro-label">${m.label}</div>
-      </div>`
+      `<div class="macro-box"><div class="macro-num">${m.val}<span class="macro-unit">${m.unit}</span></div><div class="macro-label">${m.label}</div></div>`
     ).join("");
-
-    // Ingredients
     document.getElementById("res-ingredients").innerHTML = d.ingredients.map(i =>
-      `<div class="ing-item"><div class="ing-dot"></div>${i}</div>`
-    ).join("");
-
-    // Script — highlight [VISUAL CUE] notes
-    document.getElementById("res-script").innerHTML = d.script.replace(/\[([^\]]+)\]/g,
-      '<span class="cue">[$1]</span>');
-
-    // Captions
-    document.getElementById("res-captions").innerHTML = d.captions.map(c =>
-      `<div class="caption-chip">${c}</div>`
-    ).join("");
-
+      `<div class="ing-item"><div class="ing-dot"></div>${i}</div>`).join("");
+    document.getElementById("res-script").innerHTML = d.script.replace(/\[([^\]]+)\]/g, '<span class="cue">[$1]</span>');
+    document.getElementById("res-captions").innerHTML = d.captions.map(c => `<div class="caption-chip">${c}</div>`).join("");
     document.getElementById("res-hashtags").textContent = d.hashtags;
     document.getElementById("res-description").textContent = d.description;
     document.getElementById("res-tool-name").textContent = tool.tool;
     document.getElementById("res-tool-tip").textContent = tool.tip;
     document.getElementById("res-videoprompt").textContent = d.video_prompt;
-
-    document.getElementById("results").classList.add("show");
+    const saveBtn = document.getElementById("saveBtn");
+    saveBtn.textContent = "💾 Save to Gallery";
+    saveBtn.classList.remove("saved");
+    document.getElementById("results").style.display = "block";
+    updateGalleryBadge();
   }
 
+  /* ── SAVE TO GALLERY ── */
+  function saveToGallery() {
+    if (!generatedData) return;
+    const gallery = getGallery();
+    const entry = { ...generatedData, _id: Date.now(), _savedAt: new Date().toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) };
+    gallery.unshift(entry);
+    localStorage.setItem('ketoforge_gallery', JSON.stringify(gallery));
+    const btn = document.getElementById("saveBtn");
+    btn.textContent = "✓ Saved!";
+    btn.classList.add("saved");
+    updateGalleryBadge();
+    setTimeout(() => { btn.textContent = "💾 Save to Gallery"; btn.classList.remove("saved"); }, 2500);
+  }
+
+  function getGallery() {
+    try { return JSON.parse(localStorage.getItem('ketoforge_gallery') || '[]'); } catch { return []; }
+  }
+
+  function updateGalleryBadge() {
+    const count = getGallery().length;
+    const badge = document.getElementById("galleryCountBadge");
+    const sub = document.getElementById("gallerySubCount");
+    badge.textContent = count > 0 ? `(${count})` : '';
+    if (sub) sub.textContent = count === 0 ? 'No saved recipes yet' : `${count} saved recipe${count === 1 ? '' : 's'}`;
+  }
+
+  /* ── RENDER GALLERY ── */
+  function renderGallery() {
+    updateGalleryBadge();
+    const gallery = getGallery();
+    const container = document.getElementById("galleryContent");
+    if (gallery.length === 0) {
+      container.innerHTML = `<div class="gallery-empty">
+        <div class="gallery-empty-icon">🥩</div>
+        <div class="gallery-empty-text">No recipes saved yet</div>
+        <div class="gallery-empty-sub">Generate a content pack and hit "Save to Gallery"</div>
+      </div>`;
+      return;
+    }
+    container.innerHTML = `<div class="gallery-grid">${gallery.map((r, i) => `
+      <div class="gallery-card" onclick="openModal(${i})">
+        <button class="gallery-card-del" onclick="deleteRecipe(event, ${r._id})">✕</button>
+        <div class="gallery-card-format">${formatLabel(r._format)}</div>
+        <div class="gallery-card-name">${r.recipe_name}</div>
+        <div class="gallery-card-hook">"${r.hook}"</div>
+        <div class="gallery-card-macros">
+          <div class="gallery-card-macro"><span>${r.macros.calories}</span> cal</div>
+          <div class="gallery-card-macro"><span>${r.macros.protein_g}g</span> protein</div>
+          <div class="gallery-card-macro"><span>${r.macros.fat_g}g</span> fat</div>
+          <div class="gallery-card-macro"><span>${r.macros.carbs_g}g</span> carbs</div>
+        </div>
+        <div class="gallery-card-footer">
+          <div class="gallery-card-date">${r._savedAt || ''}</div>
+          <div class="gallery-card-niche">${r._niche || 'carnivore'}</div>
+        </div>
+      </div>`).join('')}</div>`;
+  }
+
+  function deleteRecipe(e, id) {
+    e.stopPropagation();
+    const gallery = getGallery().filter(r => r._id !== id);
+    localStorage.setItem('ketoforge_gallery', JSON.stringify(gallery));
+    renderGallery();
+  }
+
+  function clearAll() {
+    if (!confirm('Delete all saved recipes?')) return;
+    localStorage.removeItem('ketoforge_gallery');
+    renderGallery();
+  }
+
+  /* ── MODAL ── */
+  function openModal(index) {
+    const gallery = getGallery();
+    const d = gallery[index];
+    if (!d) return;
+    const tool = AI_VIDEO_TOOLS[d._format] || { tool: '', tip: '' };
+    document.getElementById("modalTitle").textContent = d.recipe_name;
+    document.getElementById("modalBody").innerHTML = `
+      <div class="modal-section">
+        <div class="modal-section-label">🎣 Hook</div>
+        <div class="modal-text">"${d.hook}"</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-label">📊 Macros</div>
+        <div class="modal-macro-row">
+          <div class="modal-macro"><strong>${d.macros.calories}</strong> cal</div>
+          <div class="modal-macro"><strong>${d.macros.protein_g}g</strong> protein</div>
+          <div class="modal-macro"><strong>${d.macros.fat_g}g</strong> fat</div>
+          <div class="modal-macro"><strong>${d.macros.carbs_g}g</strong> carbs</div>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-label">🛒 Ingredients</div>
+        <div class="modal-text">${d.ingredients.join('\n')}</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-label">🎙️ Script</div>
+        <div class="modal-text">${d.script}</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-label">📱 Captions</div>
+        <div class="caption-chips">${d.captions.map(c => `<div class="caption-chip">${c}</div>`).join('')}</div>
+      </div>
+      <div class="modal-section" style="margin-top:12px">
+        <div class="modal-section-label">#️⃣ Hashtags</div>
+        <div class="modal-text" style="color:var(--blue)">${d.hashtags}</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-label">📝 Description</div>
+        <div class="modal-text">${d.description}</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-label">🎬 Video Tool: ${tool.tool}</div>
+        <div class="modal-text" style="color:#888">${tool.tip}</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-label">🤖 Video Prompt</div>
+        <div class="modal-text" style="font-style:italic;color:#888">${d.video_prompt}</div>
+      </div>`;
+    document.getElementById("modalOverlay").classList.add("show");
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById("modalOverlay")) closeModalDirect();
+  }
+  function closeModalDirect() {
+    document.getElementById("modalOverlay").classList.remove("show");
+  }
+
+  /* ── COPY / EMAIL / RESET ── */
   function copyAll() {
     if (!generatedData) return;
     const d = generatedData;
     const tool = AI_VIDEO_TOOLS[currentFormat];
-    const text =
-      `🥩 ${d.recipe_name}\n\n` +
-      `HOOK: "${d.hook}"\n\n` +
-      `INGREDIENTS:\n${d.ingredients.join("\n")}\n\n` +
-      `MACROS: ${d.macros.calories} cal | ${d.macros.protein_g}g protein | ${d.macros.fat_g}g fat | ${d.macros.carbs_g}g carbs\n\n` +
-      `SCRIPT:\n${d.script}\n\n` +
-      `CAPTIONS: ${d.captions.join(" · ")}\n\n` +
-      `HASHTAGS: ${d.hashtags}\n\n` +
-      `DESCRIPTION: ${d.description}\n\n` +
-      `VIDEO TOOL: ${tool.tool} — ${tool.tip}\n\n` +
-      `VIDEO PROMPT: ${d.video_prompt}`;
+    const text = `🥩 ${d.recipe_name}\n\nHOOK: "${d.hook}"\n\nINGREDIENTS:\n${d.ingredients.join("\n")}\n\nMACROS: ${d.macros.calories} cal | ${d.macros.protein_g}g protein | ${d.macros.fat_g}g fat | ${d.macros.carbs_g}g carbs\n\nSCRIPT:\n${d.script}\n\nCAPTIONS: ${d.captions.join(" · ")}\n\nHASHTAGS: ${d.hashtags}\n\nDESCRIPTION: ${d.description}\n\nVIDEO TOOL: ${tool.tool} — ${tool.tip}\n\nVIDEO PROMPT: ${d.video_prompt}`;
     navigator.clipboard.writeText(text).then(() => {
       const btn = document.getElementById("copyBtn");
-      btn.textContent = "✓ Copied!";
-      btn.classList.add("success");
+      btn.textContent = "✓ Copied!"; btn.classList.add("success");
       setTimeout(() => { btn.textContent = "📋 Copy All"; btn.classList.remove("success"); }, 2500);
     });
   }
@@ -566,38 +588,27 @@ Return ONLY a valid JSON object. No markdown, no backticks, no explanation befor
   function sendEmail() {
     if (!generatedData) return;
     const email = document.getElementById("emailInput").value.trim();
-    if (!email) { alert("Please enter your email address in the form above, then try again."); return; }
+    if (!email) { alert("Enter your email address first."); return; }
     const d = generatedData;
     const tool = AI_VIDEO_TOOLS[currentFormat];
     const subject = encodeURIComponent(`🥩 TikTok Content Pack: ${d.recipe_name}`);
-    const body = encodeURIComponent(
-      `TODAY'S TIKTOK CONTENT PACK\n` +
-      `Format: ${formatLabel()} | Niche: ${currentNiche}\n\n` +
-      `RECIPE: ${d.recipe_name}\n\n` +
-      `🎣 HOOK\n"${d.hook}"\n\n` +
-      `🛒 INGREDIENTS\n${d.ingredients.join("\n")}\n\n` +
-      `📊 MACROS\nCalories: ${d.macros.calories} | Protein: ${d.macros.protein_g}g | Fat: ${d.macros.fat_g}g | Carbs: ${d.macros.carbs_g}g\n\n` +
-      `🎙️ SCRIPT\n${d.script}\n\n` +
-      `📱 CAPTIONS\n${d.captions.join(" | ")}\n\n` +
-      `#️⃣ HASHTAGS\n${d.hashtags}\n\n` +
-      `📝 DESCRIPTION\n${d.description}\n\n` +
-      `🎬 AI VIDEO TOOL: ${tool.tool}\n${tool.tip}\n\n` +
-      `🤖 VIDEO PROMPT\n${d.video_prompt}`
-    );
+    const body = encodeURIComponent(`TODAY'S TIKTOK CONTENT PACK\nFormat: ${formatLabel()} | Niche: ${currentNiche}\n\nRECIPE: ${d.recipe_name}\n\n🎣 HOOK\n"${d.hook}"\n\n🛒 INGREDIENTS\n${d.ingredients.join("\n")}\n\n📊 MACROS\nCalories: ${d.macros.calories} | Protein: ${d.macros.protein_g}g | Fat: ${d.macros.fat_g}g | Carbs: ${d.macros.carbs_g}g\n\n🎙️ SCRIPT\n${d.script}\n\n📱 CAPTIONS\n${d.captions.join(" | ")}\n\n#️⃣ HASHTAGS\n${d.hashtags}\n\n📝 DESCRIPTION\n${d.description}\n\n🎬 AI VIDEO TOOL: ${tool.tool}\n${tool.tip}\n\n🤖 VIDEO PROMPT\n${d.video_prompt}`);
     window.location.href = `mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`;
     const btn = document.getElementById("emailBtn");
-    btn.textContent = "✓ Email Opened!";
-    btn.classList.add("success");
+    btn.textContent = "✓ Email Opened!"; btn.classList.add("success");
     setTimeout(() => { btn.textContent = "📧 Email to Me"; btn.classList.remove("success"); }, 3000);
   }
 
   function reset() {
     generatedData = null;
     document.getElementById("configSection").style.display = "block";
-    document.getElementById("results").classList.remove("show");
+    document.getElementById("results").style.display = "none";
     document.getElementById("loader").classList.remove("show");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
+
+  // Init
+  updateGalleryBadge();
 </script>
 </body>
 </html>
